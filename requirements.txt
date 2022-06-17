@@ -1,0 +1,2 @@
+dragonfly2==0.35.0
+kaldi-active-grammar==3.1.0
