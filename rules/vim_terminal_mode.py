@@ -1,4 +1,4 @@
-from dragonfly import MappingRule, Key, IntegerRef, Function, Dictation
+from dragonfly import MappingRule, Key, IntegerRef, Function, Dictation, Text
 
 from utils.letters import singleLetter
 from utils.casing import text_casing_choice, format_dictation

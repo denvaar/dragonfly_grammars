@@ -24,7 +24,7 @@ class Movement(MappingRule):
         "(jee jee | top)": Text("gg"),
         "(big G | big jee | bottom)": Text("G"),
 
-        "[<n>] (find | jump | F) <letter>": Text("%(n)df%(letter)s"),
+        "[<n>] (jump | F) <letter>": Text("%(n)df%(letter)s"),
 
         "page down": Key('c-d'),
         "page up": Key('c-u'),
@@ -60,12 +60,14 @@ class Editing(MappingRule):
         "(yank | why | Y)": Key("y"),
         "(paste | pea | pee | P)": Key("p"),
 
-        "[<n>] (ex | x)": Key("%(n)dx"),
+        "[<n>] (ex | x | exit)": Text("%(n)dx"),
 
-        "[<n>] (delete | D | dee)": Key("d"),
-        "(delete | D | dee) (until | tea | tee | T) <letter>": Text(
-            "dt%(letter)s"),
+        "[<n>] (delete | D | dee)": Text("%(n)dd"),
+        "[<n>] (delete | D | dee) (until | tea | tee | T) <letter>": Text(
+            "%(n)ddt%(letter)s"),
         "(delete | D | dee) (dub | word)": Text("dw"),
+
+        "(dee dee | D D)": Text("dd"),
 
         "(clear inner | see eye) <letter>": Text("ci%(letter)s"),
     }
@@ -87,6 +89,7 @@ class Misc(MappingRule):
         "(visual | V) block": Key("control:down, v, control:up"),
 
         "(V eye eye | select inner indent)": Text("vii"),
+        "(see eye (tee | tea) | clear inner tag)": Text("cit"),
 
         "escape": Key("escape"),
         "save": Text(":w\n"),
@@ -98,8 +101,10 @@ class Misc(MappingRule):
         "option down <n>": Key('c-n:%(n)d'),
         "option up <n>": Key('c-p:%(n)d'),
 
-        "(find | search) [<format_style>] <freeform_text>": Function(
-            format_dictation) + Key("enter")
+        "(find | search) [<format_style>] <freeform_text>": Text("/") + Function( format_dictation) + Key("enter"),
+        "next [match]": Key('n'),
+        "previous [match]": Key('N'),
+        "(no H L | no high | no highlight)": Text(":nohl") + Key("enter"),
     }
 
     extras = [

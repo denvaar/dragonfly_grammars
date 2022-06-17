@@ -8,6 +8,12 @@ import nltk
 
 nltk.download('punkt')
 
+logger = logging.getLogger('app')
+logger.setLevel(logging.INFO)
+
+debug_logger = logging.getLogger('app_debug')
+debug_logger.setLevel(logging.INFO)
+
 if False:
     # Debugging logging for reporting trouble
     logging.basicConfig(level=10)
@@ -28,13 +34,13 @@ def pick_language_model_engine():
                       auto_add_to_user_lexicon=True)
 
 def on_begin():
-    print("Speech detected.")
+    pass
 
 def on_recognition(words):
-    print(u"✅ Recognized: '%s'" % u" ".join(words))
+    logger.info(u"✅ Recognized: '%s'" % u" ".join(words))
 
 def on_failure():
-    print("⛔️ Failed to recognize speech.")
+    logger.info("⛔️ Failed to recognize speech.")
 
 
 def main():

@@ -1,9 +1,13 @@
+import logging
+
 from dragonfly import AppContext
+
+logger = logging.getLogger('app_debug')
 
 class VimContext(AppContext):
     def matches(self, executable, title, handle):
         match = "app:nvim" in title
-        print(f'VimContext: {match}')
+        logger.debug(f'VimContext: {match}')
 
         return match
 
@@ -13,20 +17,20 @@ class VimNormalMode(AppContext):
             or "mode:V" in title \
             or "mode:^V" in title
 
-        print(f'VimNormalMode: {match}')
+        logger.debug(f'VimNormalMode: {match}')
 
         return match
 
 class VimInsertMode(AppContext):
     def matches(self, executable, title, handle):
         match = "mode:i" in title
-        print(f'VimInsertMode: {match}')
+        logger.debug(f'VimInsertMode: {match}')
 
         return match
 
 class VimTerminalMode(AppContext):
     def matches(self, executable, title, handle):
         match = "mode:t" in title
-        print(f'VimTerminalMode: {match}')
+        logger.debug(f'VimTerminalMode: {match}')
 
         return match
