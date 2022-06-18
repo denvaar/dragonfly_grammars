@@ -1,5 +1,5 @@
 from dragonfly import (MappingRule, Key, IntegerRef, Function, Dictation,
-                       Text, Compound)
+                       Text, CompoundRule, Alternative, Repetition, RuleRef)
 
 from utils.letters import singleLetter
 from utils.casing import text_casing_choice, format_dictation
@@ -22,9 +22,8 @@ class InsertModeRule(MappingRule):
         "select option [<option_n>]": Function(select_menu_opt),
 
         "enter": Key('enter'),
+        "back space": Key('backspace'),
         "(tab | tabby)": Key('tab'),
-
-        "<letter>": Text("%(letter)s"),
 
     }
 
@@ -50,3 +49,30 @@ class DictationRule(MappingRule):
         Dictation("freeform_text"),
     ]
 
+class _SpellingRule(MappingRule):
+    exported = False
+
+    mapping = {
+        "<letter>": Text("%(letter)s"),
+    }
+
+    extras = [
+        singleLetter("letter"),
+    ]
+
+spelling_ref = RuleRef(rule=_SpellingRule())
+sequence = Repetition(Alternative([
+    spelling_ref,
+    ]),
+    min=1, max=16, name="spelling_sequence")
+
+class SpellingRule(CompoundRule):
+    spec = "spell it <spelling_sequence>"
+    extras = [
+        sequence,
+    ]
+
+    def _process_recognition(self, node, extras):
+        sequence = extras["spelling_sequence"]
+        for action in sequence:
+            action.execute()

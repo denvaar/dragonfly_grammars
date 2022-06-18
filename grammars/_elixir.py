@@ -1,10 +1,16 @@
 from dragonfly import Grammar
 
-sleep_grammar = Grammar("sleep")
-sleep_grammar.load()
+from rules.elixir import CodeShortcutRule, KeywordsRule
+
+elixir_grammar = Grammar("elixir")
+
+elixir_grammar.add_rule(CodeShortcutRule())
+elixir_grammar.add_rule(KeywordsRule())
+
+elixir_grammar.load()
 
 def unload():
-    global sleep_grammar
-    if sleep_grammar:
-        sleep_grammar.unload()
-    sleep_grammar = None
+    global elixir_grammar
+    if elixir_grammar:
+        elixir_grammar.unload()
+    elixir_grammar = None

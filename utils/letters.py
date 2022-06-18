@@ -44,14 +44,17 @@ def singleLetter(name="letter"):
         '(right | close) bracket': ']',
 
         'percent': '%',
+        '(tilda | squiggle)': '~',
         '(equal | equals)': '=',
         'colon': ':',
         '(dot | period)': '.',
-        '(quote | double quote | string)': '"',
+        '(double quote | dub quote | string)': '"',
+        'single quote': '\'',
         '(under | underscore)': '_',
         '(arrow | dash | minus)': '-',
         'space': ' ',
         'comma': ',',
+        '(bar | vertical bar)': '|',
 
         '[forward] slash': '/',
     }

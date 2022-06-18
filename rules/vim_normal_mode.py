@@ -1,116 +1,212 @@
 from dragonfly import (MappingRule, Dictation, Integer, Key, Function, Text,
-                       Choice, CompoundRule, IntegerRef)
+                       Choice, CompoundRule, IntegerRef, RuleRef, Alternative,
+                       Repetition, CompoundRule)
 
 from utils.letters import singleLetter
 from utils.casing import format_dictation, text_casing_choice
 
 
+movement_mapping = {
+    "[<n>] (down | jay | J)": Text("%(n)dj"),
+    "[<n>] (up | kay | K)": Text("%(n)dk"),
+    "[<n>] (left | H)": Text("%(n)dh"),
+    "[<n>] (right | el | L)": Text("%(n)dl"),
+
+    "[<n>] (word | dub | W)": Text("%(n)dw"),
+    "[<n>] big (word | dub | W)": Text("%(n)dW"),
+
+    "[<n>] (eee | E)": Text("%(n)de"),
+    "[<n>] big (eee | E)": Text("%(n)dE"),
+
+    "[<n>] (bee | be | B)": Text("%(n)db"),
+    "[<n>] (big | cap | capital) (bee | be | B)": Text("%(n)dB"),
+
+    "(jee jee | top)": Text("gg"),
+    "(big G | big jee | bottom)": Text("G"),
+
+    "[<n>] (jump | F) <letter>": Text("%(n)df%(letter)s"),
+
+    "page down": Key('c-d'),
+    "page up": Key('c-u'),
+
+    "dollar": Key("$"),
+    "carrot": Key("^"),
+}
+
+movement_extras = [
+    singleLetter("letter"),
+    IntegerRef("n", 1, 900),
+]
+
+movement_defaults = {
+    "n": 1,
+}
+
+editing_mapping = {
+    "(eye | I)": Key("i"),
+    "big (eye | I)": Key("I"),
+
+    "(A | append)": Key("a"),
+    "big (A | append)": Key("A"),
+
+    "(oh | O)": Key("o"),
+    "big (oh | O)": Key("O"),
+
+    "undo": Key("u"),
+    "redo": Key("c-r"),
+
+    "(yank line | why why)": Text("yy"),
+    "(yank | why | Y)": Key("y"),
+    "(paste | pea | pee | P)": Key("p"),
+
+    "[<n>] (ex | x | exit)": Text("%(n)dx"),
+
+    "[<n>] (delete | D | dee)": Text("%(n)dd"),
+    "[<n>] (delete | D | dee) (until | tea | tee | T) <letter>": Text(
+        "%(n)ddt%(letter)s"),
+    "(delete | D | dee) (dub | word)": Text("dw"),
+
+    "(dee dee | D D)": Text("dd"),
+
+    "(clear inner | see eye) <letter>": Text("ci%(letter)s"),
+}
+
+editing_extras = [
+    singleLetter("letter"),
+    IntegerRef("n", 1, 900),
+]
+
+editing_defaults = {
+    "n": 1,
+}
+
+misc_mapping = {
+    "insert [mode]": Key("i"),
+
+    "(visual | V) line": Key("shift:down, v, shift:up"),
+    "(visual | V) block": Key("control:down, v, control:up"),
+
+    "(V eye eye | select inner indent)": Text("vii"),
+    "(see eye (tee | tea) | clear inner tag)": Text("cit"),
+
+    "escape": Key("escape"),
+    "save": Text(":w\n"),
+    "save quit": Text(":wq\n"),
+
+    "next tab": Text("gt"),
+    "previous tab": Text("gT"),
+    "([go to] (tab | tabby) | G T) <n>": Text("%(n)dgt"),
+
+    "file search": Key("control:down, p, control:up"),
+    "code search": Key("control:down, i, control:up"),
+    "option <n>": Key('c-n:%(n)d'),
+    "option down <n>": Key('c-n:%(n)d'),
+    "option up <n>": Key('c-p:%(n)d'),
+
+    "(find | search) [<format_style>] <freeform_text>": Text("/") + Function(
+            format_dictation) + Key("enter"),
+    "next [match]": Key('n'),
+    "previous [match]": Key('N'),
+    "(no H L | no high | no highlight)": Text(":nohl") + Key("enter"),
+
+    "(control dub dub | next window)": Key("c-w", "c-w"),
+    "previous window": Key("c-w", "c-p"),
+}
+
+misc_extras = [
+    IntegerRef("n", 1, 900),
+    Dictation("freeform_text"),
+    text_casing_choice("format_style")
+]
+
+misc_defaults = {}
+
 class Movement(MappingRule):
-    mapping = {
-        "[<n>] (down | jay | J)": Text("%(n)dj"),
-        "[<n>] (up | kay | K)": Text("%(n)dk"),
-        "[<n>] (left | H)": Text("%(n)dh"),
-        "[<n>] (right | el | L)": Text("%(n)dl"),
-
-        "[<n>] (word | dub | W)": Text("%(n)dw"),
-        "[<n>] big (word | dub | W)": Text("%(n)dW"),
-
-        "[<n>] (eee | E)": Text("%(n)de"),
-        "[<n>] big (eee | E)": Text("%(n)dE"),
-
-        "[<n>] (bee | be | B)": Text("%(n)db"),
-        "[<n>] (big | cap | capital) (bee | be | B)": Text("%(n)dB"),
-
-        "(jee jee | top)": Text("gg"),
-        "(big G | big jee | bottom)": Text("G"),
-
-        "[<n>] (jump | F) <letter>": Text("%(n)df%(letter)s"),
-
-        "page down": Key('c-d'),
-        "page up": Key('c-u'),
-
-        "dollar": Key("$"),
-        "carrot": Key("^"),
-    }
-
-    extras = [
-        singleLetter("letter"),
-        IntegerRef("n", 1, 900),
-    ]
-
-    defaults = {
-        "n": 1,
-    }
+    exported = False
+    mapping = movement_mapping
+    extras = movement_extras
+    defaults = movement_defaults
 
 class Editing(MappingRule):
-    mapping = {
-        "(eye | I)": Key("i"),
-        "big (eye | I)": Key("I"),
-
-        "(A | append)": Key("a"),
-        "big (A | append)": Key("A"),
-
-        "(oh | O)": Key("o"),
-        "big (oh | O)": Key("O"),
-
-        "undo": Key("u"),
-        "redo": Key("c-r"),
-
-        "(yank line | why why)": Text("yy"),
-        "(yank | why | Y)": Key("y"),
-        "(paste | pea | pee | P)": Key("p"),
-
-        "[<n>] (ex | x | exit)": Text("%(n)dx"),
-
-        "[<n>] (delete | D | dee)": Text("%(n)dd"),
-        "[<n>] (delete | D | dee) (until | tea | tee | T) <letter>": Text(
-            "%(n)ddt%(letter)s"),
-        "(delete | D | dee) (dub | word)": Text("dw"),
-
-        "(dee dee | D D)": Text("dd"),
-
-        "(clear inner | see eye) <letter>": Text("ci%(letter)s"),
-    }
-
-    extras = [
-        singleLetter("letter"),
-        IntegerRef("n", 1, 900),
-    ]
-
-    defaults = {
-        "n": 1,
-    }
+    exported = False
+    mapping = editing_mapping
+    extras = editing_extras
+    defaults = editing_defaults
 
 class Misc(MappingRule):
-    mapping = {
-        "insert [mode]": Key("i"),
+    exported = False
+    mapping = misc_mapping
+    extras = misc_extras
+    defaults = misc_defaults
 
-        "(visual | V) line": Key("shift:down, v, shift:up"),
-        "(visual | V) block": Key("control:down, v, control:up"),
+misc_rule_ref = RuleRef(rule=Misc())
+movement_rule_ref = RuleRef(rule=Movement())
+editing_rule_ref = RuleRef(rule=Editing())
 
-        "(V eye eye | select inner indent)": Text("vii"),
-        "(see eye (tee | tea) | clear inner tag)": Text("cit"),
+misc_sequence = Repetition(
+    Alternative([
+        movement_rule_ref,
+        misc_rule_ref,
+        editing_rule_ref,
+    ]),
+    min=1,
+    max=20,
+    name="misc_sequence"
+)
 
-        "escape": Key("escape"),
-        "save": Text(":w\n"),
-        "save quit": Text(":wq\n"),
+movement_sequence = Repetition(
+    Alternative([
+        misc_rule_ref,
+        movement_rule_ref,
+        editing_rule_ref,
+    ]),
+    min=1,
+    max=20,
+    name="movement_sequence"
+)
 
-        "file search": Key("control:down, p, control:up"),
-        "code search": Key("control:down, i, control:up"),
-        "option <n>": Key('c-n:%(n)d'),
-        "option down <n>": Key('c-n:%(n)d'),
-        "option up <n>": Key('c-p:%(n)d'),
+edit_sequence = Repetition(
+    Alternative([
+        movement_rule_ref,
+        editing_rule_ref,
+        misc_rule_ref,
+    ]),
+    min=1,
+    max=20,
+    name="edit_sequence"
+)
 
-        "(find | search) [<format_style>] <freeform_text>": Text("/") + Function( format_dictation) + Key("enter"),
-        "next [match]": Key('n'),
-        "previous [match]": Key('N'),
-        "(no H L | no high | no highlight)": Text(":nohl") + Key("enter"),
-    }
-
+class MiscSequenceRule(CompoundRule):
+    spec = "<misc_sequence>"
     extras = [
-        IntegerRef("n", 1, 900),
-        Dictation("freeform_text"),
-        text_casing_choice("format_style")
+        misc_sequence,
     ]
 
-    defaults = {}
+    def _process_recognition(self, node, extras):
+        sequence = extras["misc_sequence"]
+        for action in sequence:
+            action.execute()
+
+
+class MovementSequenceRule(CompoundRule):
+    spec = "<movement_sequence>"
+    extras = [
+        movement_sequence,
+    ]
+
+    def _process_recognition(self, node, extras):
+        sequence = extras["movement_sequence"]
+        for action in sequence:
+            action.execute()
+
+
+class EditSequenceRule(CompoundRule):
+    spec = "<edit_sequence>"
+    extras = [
+        edit_sequence,
+    ]
+
+    def _process_recognition(self, node, extras):
+        sequence = extras["edit_sequence"]
+        for action in sequence:
+            action.execute()
