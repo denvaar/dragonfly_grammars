@@ -10,7 +10,7 @@ def singleLetter(name="letter"):
         '(fox | foxtrot | F)' : 'f',
         '(jee | G)' : 'g',
         '(hotel | H)' : 'h',
-        '(eye | india | I)' : 'i',
+        '(eye | india | igloo | I)' : 'i',
         '(jay | J)' : 'j',
         '(kay | K)' : 'k',
         '(el | lima | L)' : 'l',
@@ -31,7 +31,7 @@ def singleLetter(name="letter"):
     }
 
     uppers = dict(
-        [("(upper | big) " + k, v.upper()) for k, v in lowers.items()])
+        [("(upper | big | capital) " + k, v.upper()) for k, v in lowers.items()])
 
     symbols = {
         '(left | open) parenthesis': '(',

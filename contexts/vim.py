@@ -16,6 +16,7 @@ class VimNormalMode(AppContext):
         match = "mode:n" in title \
             or "mode:V" in title \
             or "mode:^V" in title
+        print(title)
 
         logger.debug(f'VimNormalMode: {match}')
 

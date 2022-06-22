@@ -8,7 +8,7 @@ def elixir_enum_choice(name):
         "chunk by": "chunk_by",
         "chunk every": "chunk_every",
         "chunk while": "chunk_while",
-        "concat": "concat",
+        "kun cat": "concat",
         "count": "count",
         "count until": "count_until",
         "D dupe": "dedup",

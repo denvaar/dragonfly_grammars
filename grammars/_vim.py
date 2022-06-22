@@ -1,12 +1,12 @@
 from dragonfly import Grammar
 
 from contexts.vim import VimNormalMode, VimInsertMode, VimTerminalMode
-from rules.vim_normal_mode import MovementSequenceRule, MiscSequenceRule, EditSequenceRule
-from rules.vim_insert_mode import InsertModeRule, DictationRule, SpellingRule 
+from rules.vim_normal_mode import MovementSequenceRule, MiscSequenceRule, EditSequenceRule, InsertSpellItRule, InsertDictateRule
+from rules.vim_insert_mode import InsertModeRule, DictationRule, SpellingRule
 from rules.vim_terminal_mode import FzfFinderWindowRule
 
 terminal_mode_grammar = Grammar("vim terminal mode",
-                              context=VimTerminalMode())
+                                context=VimTerminalMode())
 
 terminal_mode_grammar.add_rule(FzfFinderWindowRule())
 terminal_mode_grammar.load()
@@ -17,6 +17,8 @@ normal_mode_grammar = Grammar("vim normal mode",
 normal_mode_grammar.add_rule(EditSequenceRule())
 normal_mode_grammar.add_rule(MovementSequenceRule())
 normal_mode_grammar.add_rule(MiscSequenceRule())
+normal_mode_grammar.add_rule(InsertSpellItRule())
+normal_mode_grammar.add_rule(InsertDictateRule())
 
 normal_mode_grammar.load()
 

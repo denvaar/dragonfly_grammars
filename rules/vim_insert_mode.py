@@ -24,6 +24,7 @@ class InsertModeRule(MappingRule):
         "enter": Key('enter'),
         "back space": Key('backspace'),
         "(tab | tabby)": Key('tab'),
+        "escape": Key('escape'),
 
     }
 
@@ -63,8 +64,8 @@ class _SpellingRule(MappingRule):
 spelling_ref = RuleRef(rule=_SpellingRule())
 sequence = Repetition(Alternative([
     spelling_ref,
-    ]),
-    min=1, max=16, name="spelling_sequence")
+]),
+                      min=1, max=16, name="spelling_sequence")
 
 class SpellingRule(CompoundRule):
     spec = "spell it <spelling_sequence>"

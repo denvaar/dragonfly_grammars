@@ -4,6 +4,8 @@ from dragonfly import (MappingRule, Dictation, Integer, Key, Function, Text,
 
 from utils.letters import singleLetter
 from utils.casing import format_dictation, text_casing_choice
+from rules.vim_insert_mode import _SpellingRule as InsertModeSpellingRule
+from rules.vim_insert_mode import DictationRule as InsertModeDictationRule
 
 
 movement_mapping = {
@@ -69,11 +71,18 @@ editing_mapping = {
     "(dee dee | D D)": Text("dd"),
 
     "(clear inner | see eye) <letter>": Text("ci%(letter)s"),
+
+    "insert [<format_style>] <freeform_text>": Key('i') + Function(format_dictation) + Key('escape'),
+
+    # "insert <insert_mode_spelling_rule>": Key('i') + Text('%(insert_mode_spelling_rule)s') + Key('escape')
 }
 
 editing_extras = [
     singleLetter("letter"),
     IntegerRef("n", 1, 900),
+    text_casing_choice("format_style"),
+    Dictation("freeform_text"),
+    # RuleRef(rule=InsertModeSpellingRule(), name="insert_mode_spelling_rule"),
 ]
 
 editing_defaults = {
@@ -81,7 +90,7 @@ editing_defaults = {
 }
 
 misc_mapping = {
-    "insert [mode]": Key("i"),
+    "insert mode": Key("i"),
 
     "(visual | V) line": Key("shift:down, v, shift:up"),
     "(visual | V) block": Key("control:down, v, control:up"),
@@ -104,7 +113,7 @@ misc_mapping = {
     "option up <n>": Key('c-p:%(n)d'),
 
     "(find | search) [<format_style>] <freeform_text>": Text("/") + Function(
-            format_dictation) + Key("enter"),
+        format_dictation) + Key("enter"),
     "next [match]": Key('n'),
     "previous [match]": Key('N'),
     "(no H L | no high | no highlight)": Text(":nohl") + Key("enter"),
@@ -142,6 +151,7 @@ class Misc(MappingRule):
 misc_rule_ref = RuleRef(rule=Misc())
 movement_rule_ref = RuleRef(rule=Movement())
 editing_rule_ref = RuleRef(rule=Editing())
+insert_mode_spelling_ref = RuleRef(rule=InsertModeSpellingRule())
 
 misc_sequence = Repetition(
     Alternative([
@@ -175,6 +185,9 @@ edit_sequence = Repetition(
     max=20,
     name="edit_sequence"
 )
+
+insert_spell_it_seq = Repetition(Alternative([insert_mode_spelling_ref, ]),
+                                 min=1, max=16, name="insert_spell_it_seq")
 
 class MiscSequenceRule(CompoundRule):
     spec = "<misc_sequence>"
@@ -210,3 +223,41 @@ class EditSequenceRule(CompoundRule):
         sequence = extras["edit_sequence"]
         for action in sequence:
             action.execute()
+
+
+class InsertSpellItRule(CompoundRule):
+    spec = "<mode> spell it <insert_spell_it_seq>"
+    extras = [
+        insert_spell_it_seq,
+        Choice("mode", {
+            "insert": "i",
+            "append": "a",
+            "big (insert | I | eye)": "I",
+            "big (append | A)": "A",
+        })
+    ]
+
+    def _process_recognition(self, node, extras):
+        sequence = [Key(extras["mode"])] + extras["insert_spell_it_seq"] + [Key('escape')]
+
+        for action in sequence:
+            action.execute()
+
+class InsertDictateRule(CompoundRule):
+    spec = "<mode> <insert_dictate_ref>"
+    extras = [
+        RuleRef(rule=InsertModeDictationRule(), name="insert_dictate_ref"),
+        Choice("mode", {
+            "insert": "i",
+            "append": "a",
+            "big (insert | I | eye)": "I",
+            "big (append | A)": "A",
+        })
+    ]
+
+    def _process_recognition(self, node, extras):
+        sequence = [Key(extras["mode"])] + [extras["insert_dictate_ref"]] + [Key('escape')]
+
+        for action in sequence:
+            action.execute()
+

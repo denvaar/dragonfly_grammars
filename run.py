@@ -10,9 +10,11 @@ nltk.download('punkt')
 
 logger = logging.getLogger('app')
 logger.setLevel(logging.INFO)
+# logger.setLevel(logging.DEBUG)
 
 debug_logger = logging.getLogger('app_debug')
 debug_logger.setLevel(logging.INFO)
+# debug_logger.setLevel(logging.DEBUG)
 
 if False:
     # Debugging logging for reporting trouble
