@@ -65,7 +65,7 @@ editing_mapping = {
 
     "[<n>] (delete | D | dee)": Text("%(n)dd"),
     "[<n>] (delete | D | dee) (until | tea | tee | T) <letter>": Text(
-        "%(n)ddt%(letter)s"),
+        f"%(n)ddt%(letter)s"),
     "(delete | D | dee) (dub | word)": Text("dw"),
 
     "(dee dee | D D)": Text("dd"),
@@ -112,14 +112,18 @@ misc_mapping = {
     "option down <n>": Key('c-n:%(n)d'),
     "option up <n>": Key('c-p:%(n)d'),
 
-    "(find | search) [<format_style>] <freeform_text>": Text("/") + Function(
+    "(find this word | search for this word)": Key("#"),
+
+    "(find | search) [for] [<format_style>] <freeform_text>": Text("/") + Function(
         format_dictation) + Key("enter"),
     "next [match]": Key('n'),
     "previous [match]": Key('N'),
     "(no H L | no high | no highlight)": Text(":nohl") + Key("enter"),
 
-    "(control dub dub | next window)": Key("c-w", "c-w"),
-    "previous window": Key("c-w", "c-p"),
+    "(control dub dub | next window)": Key("c-w, c-w"),
+    "previous window": Key("c-w, c-p"),
+
+    "current path expand": Key("percent, colon, h, tab")
 }
 
 misc_extras = [
