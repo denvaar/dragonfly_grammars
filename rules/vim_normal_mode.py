@@ -26,7 +26,9 @@ movement_mapping = {
     "(jee jee | top)": Text("gg"),
     "(big G | big jee | bottom)": Text("G"),
 
-    "[<n>] (jump | F) <letter>": Text("%(n)df%(letter)s"),
+    "[<n>] (jump | fine) <letter>": Text("%(n)df%(letter)s"),
+    "[<n>] (jump (backwards | backward) | big fine) <letter>": \
+        Text("%(n)dF%(letter)s"),
 
     "page down": Key('c-d'),
     "page up": Key('c-u'),
@@ -72,6 +74,8 @@ editing_mapping = {
 
     "(clear inner | see eye) <letter>": Text("ci%(letter)s"),
 
+    "replace <letter>": Text("r%(letter)s"),
+
     "insert [<format_style>] <freeform_text>": Key('i') + Function(format_dictation) + Key('escape'),
 
     # "insert <insert_mode_spelling_rule>": Key('i') + Text('%(insert_mode_spelling_rule)s') + Key('escape')
@@ -99,8 +103,14 @@ misc_mapping = {
     "(see eye (tee | tea) | clear inner tag)": Text("cit"),
 
     "escape": Key("escape"),
-    "save": Text(":w\n"),
-    "save quit": Text(":wq\n"),
+    "command save quit": Text(":wq\n"),
+
+    "command save": Text(":w") + Key("enter"),
+    "command quit": Text(":q") + Key("enter"),
+    "command quit all": Text(":qa") + Key("enter"),
+    "command force quit all": Text(":qa!") + Key("enter"),
+    "command force quit": Text(":q!") + Key("enter"),
+    "command save [and] quit": Text(":wq") + Key("enter"),
 
     "next tab": Text("gt"),
     "previous tab": Text("gT"),
@@ -112,9 +122,9 @@ misc_mapping = {
     "option down <n>": Key('c-n:%(n)d'),
     "option up <n>": Key('c-p:%(n)d'),
 
-    "(find this word | search for this word)": Key("#"),
+    "search for this word": Key("#"),
 
-    "(find | search) [for] [<format_style>] <freeform_text>": Text("/") + Function(
+    "search [for] [<format_style>] <freeform_text>": Text("/") + Function(
         format_dictation) + Key("enter"),
     "next [match]": Key('n'),
     "previous [match]": Key('N'),
@@ -242,7 +252,9 @@ class InsertSpellItRule(CompoundRule):
     ]
 
     def _process_recognition(self, node, extras):
-        sequence = [Key(extras["mode"])] + extras["insert_spell_it_seq"] + [Key('escape')]
+        sequence = [Key(extras["mode"])] \
+            + extras["insert_spell_it_seq"] \
+            + [Key('escape')]
 
         for action in sequence:
             action.execute()
@@ -260,7 +272,9 @@ class InsertDictateRule(CompoundRule):
     ]
 
     def _process_recognition(self, node, extras):
-        sequence = [Key(extras["mode"])] + [extras["insert_dictate_ref"]] + [Key('escape')]
+        sequence = [Key(extras["mode"])] \
+            + [extras["insert_dictate_ref"]] \
+            + [Key('escape')]
 
         for action in sequence:
             action.execute()

@@ -1,15 +1,16 @@
 from dragonfly import (MappingRule, Key, IntegerRef, Function, Dictation,
                        Text, CompoundRule, Alternative, Repetition, RuleRef)
 
+
 from utils.letters import singleLetter
 from utils.casing import text_casing_choice, format_dictation
 
 def select_menu_opt(option_n=None):
     if option_n:
-        action = Key('c-n:%(option_n)d') + Key("tab")
+        action = Key('c-n:%(option_n)d') + Key("c-y")
         return action.execute({"option_n": option_n - 1})
 
-    return Key("tab").execute()
+    return Key("c-y").execute()
 
 class InsertModeRule(MappingRule):
     mapping = {
@@ -32,7 +33,6 @@ class InsertModeRule(MappingRule):
         singleLetter("letter"),
         IntegerRef("option_n", 1, 900),
         IntegerRef("n", 1, 900),
-        Dictation("dictation"),
     ]
 
     defaults = {

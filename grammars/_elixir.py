@@ -1,8 +1,9 @@
 from dragonfly import Grammar
 
+from contexts.elixir import ElixirContext
 from rules.elixir import CodeShortcutRule, KeywordsRule
 
-elixir_grammar = Grammar("elixir")
+elixir_grammar = Grammar("elixir", context=ElixirContext())
 
 elixir_grammar.add_rule(CodeShortcutRule())
 elixir_grammar.add_rule(KeywordsRule())

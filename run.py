@@ -44,7 +44,6 @@ def on_recognition(words):
 def on_failure():
     logger.info("⛔️ Failed to recognize speech.")
 
-
 def main():
     try:
         path = os.path.dirname(__file__)

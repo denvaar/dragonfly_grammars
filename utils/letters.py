@@ -49,6 +49,7 @@ def singleLetter(name="letter"):
         '(tilda | squiggle)': '~',
         '(equal | equals)': '=',
         'colon': ':',
+        'semicolon': ';',
         '(dot | period)': '.',
         '(double quote | dub quote | string)': '"',
         'single quote': '\'',
