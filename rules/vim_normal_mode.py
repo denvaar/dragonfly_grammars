@@ -1,6 +1,6 @@
 from dragonfly import (MappingRule, Dictation, Integer, Key, Function, Text,
                        Choice, CompoundRule, IntegerRef, RuleRef, Alternative,
-                       Repetition, CompoundRule)
+                       Repetition, CompoundRule, FuncContext)
 
 from utils.letters import singleLetter
 from utils.casing import format_dictation, text_casing_choice
