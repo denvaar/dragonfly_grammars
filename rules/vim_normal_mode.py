@@ -118,6 +118,7 @@ misc_mapping = {
 
     "file search": Key("control:down, p, control:up"),
     "code search": Key("control:down, i, control:up"),
+    "code search for this": Key("control:down, k, control:up"),
     "option <n>": Key('c-n:%(n)d'),
     "option down <n>": Key('c-n:%(n)d'),
     "option up <n>": Key('c-p:%(n)d'),

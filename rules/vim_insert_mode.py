@@ -18,14 +18,19 @@ class InsertModeRule(MappingRule):
 
         "complete": Key('c-n'),
         "option <n>": Key('c-n:%(n)d'),
-        "option down <n>": Key('c-n:%(n)d'),
-        "option up <n>": Key('c-p:%(n)d'),
+        "option down [<n>]": Key('c-n:%(n)d'),
+        "option up [<n>]": Key('c-p:%(n)d'),
         "select option [<option_n>]": Function(select_menu_opt),
 
         "enter": Key('enter'),
+        "dot": Text('.'),
+        "comma": Text(','),
         "back space": Key('backspace'),
+        "space": Key('space'),
         "(tab | tabby)": Key('tab'),
         "escape": Key('escape'),
+
+        "(undo | scratch that)": Key('c-w'),
 
     }
 
