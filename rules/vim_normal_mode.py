@@ -168,7 +168,7 @@ movement_rule_ref = RuleRef(rule=Movement())
 editing_rule_ref = RuleRef(rule=Editing())
 insert_mode_spelling_ref = RuleRef(rule=InsertModeSpellingRule())
 
-misc_sequence = Repetition(
+sequence = Repetition(
     Alternative([
         movement_rule_ref,
         misc_rule_ref,
@@ -176,66 +176,20 @@ misc_sequence = Repetition(
     ]),
     min=1,
     max=20,
-    name="misc_sequence"
-)
-
-movement_sequence = Repetition(
-    Alternative([
-        misc_rule_ref,
-        movement_rule_ref,
-        editing_rule_ref,
-    ]),
-    min=1,
-    max=20,
-    name="movement_sequence"
-)
-
-edit_sequence = Repetition(
-    Alternative([
-        movement_rule_ref,
-        editing_rule_ref,
-        misc_rule_ref,
-    ]),
-    min=1,
-    max=20,
-    name="edit_sequence"
+    name="sequence"
 )
 
 insert_spell_it_seq = Repetition(Alternative([insert_mode_spelling_ref, ]),
                                  min=1, max=16, name="insert_spell_it_seq")
 
-class MiscSequenceRule(CompoundRule):
-    spec = "<misc_sequence>"
+class SequenceRule(CompoundRule):
+    spec = "<sequence>"
     extras = [
-        misc_sequence,
+        sequence,
     ]
 
     def _process_recognition(self, node, extras):
-        sequence = extras["misc_sequence"]
-        for action in sequence:
-            action.execute()
-
-
-class MovementSequenceRule(CompoundRule):
-    spec = "<movement_sequence>"
-    extras = [
-        movement_sequence,
-    ]
-
-    def _process_recognition(self, node, extras):
-        sequence = extras["movement_sequence"]
-        for action in sequence:
-            action.execute()
-
-
-class EditSequenceRule(CompoundRule):
-    spec = "<edit_sequence>"
-    extras = [
-        edit_sequence,
-    ]
-
-    def _process_recognition(self, node, extras):
-        sequence = extras["edit_sequence"]
+        sequence = extras["sequence"]
         for action in sequence:
             action.execute()
 
