@@ -7,28 +7,31 @@ from utils.casing import format_dictation, text_casing_choice
 from rules.vim_insert_mode import _SpellingRule as InsertModeSpellingRule
 from rules.vim_insert_mode import DictationRule as InsertModeDictationRule
 
+from rules.vim_command_mode import FileOperations as CommandModeFileOperations
+from rules.vim_command_mode import CommandModeMisc
+from rules.vim_command_mode import SearchAndReplace as CommandModeSearchAndReplace
+
 
 movement_mapping = {
-    "[<n>] (down | jay | J)": Text("%(n)dj"),
-    "[<n>] (up | kay | K)": Text("%(n)dk"),
-    "[<n>] (left | H)": Text("%(n)dh"),
-    "[<n>] (right | el | L)": Text("%(n)dl"),
+    "[<n>] jury": Text("%(n)dj"),
+    "[<n>] kite": Text("%(n)dk"),
+    "[<n>] harp": Text("%(n)dh"),
+    "[<n>] look": Text("%(n)dl"),
 
-    "[<n>] (word | dub | W)": Text("%(n)dw"),
-    "[<n>] big (word | dub | W)": Text("%(n)dW"),
+    "[<n>] (word | whale)": Text("%(n)dw"),
+    "[<n>] big (word | whale)": Text("%(n)dW"),
 
-    "[<n>] (eee | E)": Text("%(n)de"),
-    "[<n>] big (eee | E)": Text("%(n)dE"),
+    "[<n>] each": Text("%(n)de"),
+    "[<n>] big each": Text("%(n)dE"),
 
-    "[<n>] (bee | be | B)": Text("%(n)db"),
-    "[<n>] (big | cap | capital) (bee | be | B)": Text("%(n)dB"),
+    "[<n>] bat": Text("%(n)db"),
+    "[<n>] big bat": Text("%(n)dB"),
 
-    "(jee jee | top)": Text("gg"),
-    "(big G | big jee | bottom)": Text("G"),
+    "(guest guest | top)": Text("gg"),
+    "(big guest | bottom)": Text("G"),
 
-    "[<n>] (jump | fine) <letter>": Text("%(n)df%(letter)s"),
-    "[<n>] (jump (backwards | backward) | big fine) <letter>": \
-        Text("%(n)dF%(letter)s"),
+    "[<n>] fine <letter>": Text("%(n)df%(letter)s"),
+    "[<n>] big fine <letter>": Text("%(n)dF%(letter)s"),
 
     "page down": Key('c-d'),
     "page up": Key('c-u'),
@@ -47,38 +50,37 @@ movement_defaults = {
 }
 
 editing_mapping = {
-    "(eye | I)": Key("i"),
-    "big (eye | I)": Key("I"),
+    "big sit": Key("I"),
 
-    "(A | append)": Key("a"),
-    "big (A | append)": Key("A"),
+    "(air | append)": Key("a"),
+    "big (air | append)": Key("A"),
 
-    "(oh | O)": Key("o"),
-    "big (oh | O)": Key("O"),
+    "odd": Key("o"),
+    "big odd": Key("O"),
 
     "undo": Key("u"),
     "redo": Key("c-r"),
 
-    "(yank line | why why)": Text("yy"),
-    "(yank | why | Y)": Key("y"),
-    "(paste | pea | pee | P)": Key("p"),
+    "big jury": Key("J"),
 
-    "[<n>] (ex | x | exit)": Text("%(n)dx"),
+    "(yank yank | yankee yankee)": Text("yy"),
+    "(yank | yankee)": Key("y"),
+    "pit": Key("p"),
 
-    "[<n>] (delete | D | dee)": Text("%(n)dd"),
-    "[<n>] (delete | D | dee) (until | tea | tee | T) <letter>": Text(
+    "[<n>] plex": Text("%(n)dx"),
+
+    "[<n>] drum": Text("%(n)dd"),
+    "[<n>] drum (until | trap) <letter>": Text(
         f"%(n)ddt%(letter)s"),
-    "(delete | D | dee) (dub | word)": Text("dw"),
+    "drum whale": Text("dw"),
 
-    "(dee dee | D D)": Text("dd"),
+    "drum drum": Text("dd"),
 
-    "(clear inner | see eye) <letter>": Text("ci%(letter)s"),
+    "(clear inner | cap sit) <letter>": Text("ci%(letter)s"),
 
-    "replace <letter>": Text("r%(letter)s"),
+    "(red | replace) <letter>": Text("r%(letter)s"),
 
     "insert [<format_style>] <freeform_text>": Key('i') + Function(format_dictation) + Key('escape'),
-
-    # "insert <insert_mode_spelling_rule>": Key('i') + Text('%(insert_mode_spelling_rule)s') + Key('escape')
 }
 
 editing_extras = [
@@ -86,7 +88,6 @@ editing_extras = [
     IntegerRef("n", 1, 900),
     text_casing_choice("format_style"),
     Dictation("freeform_text"),
-    # RuleRef(rule=InsertModeSpellingRule(), name="insert_mode_spelling_rule"),
 ]
 
 editing_defaults = {
@@ -95,43 +96,38 @@ editing_defaults = {
 
 misc_mapping = {
     "insert mode": Key("i"),
-
-    "(visual | V) line": Key("shift:down, v, shift:up"),
-    "(visual | V) block": Key("control:down, v, control:up"),
-
-    "(V eye eye | select inner indent)": Text("vii"),
-    "(see eye (tee | tea) | clear inner tag)": Text("cit"),
+    "(visual | vest) line": Key("shift:down, v, shift:up"),
+    "(visual | vest) block": Key("control:down, v, control:up"),
+    "command mode": Key("colon"),
 
     "escape": Key("escape"),
-    "command save quit": Text(":wq\n"),
 
-    "command save": Text(":w") + Key("enter"),
-    "command quit": Text(":q") + Key("enter"),
-    "command quit all": Text(":qa") + Key("enter"),
-    "command force quit all": Text(":qa!") + Key("enter"),
-    "command force quit": Text(":q!") + Key("enter"),
-    "command save [and] quit": Text(":wq") + Key("enter"),
+    "(vest sit sit | select inner indent)": Text("vii"),
+    "(cap sit trap | clear inner tag)": Text("cit"),
+     
 
-    "next tab": Text("gt"),
-    "previous tab": Text("gT"),
-    "([go to] (tab | tabby) | G T) <n>": Text("%(n)dgt"),
+    "(next tab | guest trap)": Text("gt"),
+    "(previous tab | guest big trap)": Text("gT"),
+    "([go to] tab | guest trap) <n>": Text("%(n)dgt"),
 
     "file search": Key("control:down, p, control:up"),
     "code search": Key("control:down, i, control:up"),
     "code search for this": Key("control:down, k, control:up"),
+
     "option <n>": Key('c-n:%(n)d'),
     "option down <n>": Key('c-n:%(n)d'),
     "option up <n>": Key('c-p:%(n)d'),
 
     "search for this word": Key("#"),
-
-    "search [for] [<format_style>] <freeform_text>": Text("/") + Function(
+    "search for [<format_style>] <freeform_text>": Text("/") + Function(
         format_dictation) + Key("enter"),
-    "next [match]": Key('n'),
-    "previous [match]": Key('N'),
-    "(no H L | no high | no highlight)": Text(":nohl") + Key("enter"),
 
-    "(control dub dub | next window)": Key("c-w, c-w"),
+    "(next [match] | near)": Key('n'),
+    "(previous [match] | big near)": Key('N'),
+
+    "(no harp look | no harp | no highlight)": Text(":nohl") + Key("enter"),
+
+    "(control whale whale | next window)": Key("c-w, c-w"),
     "previous window": Key("c-w, c-p"),
 
     "current path expand": Key("percent, colon, h, tab")
@@ -232,5 +228,26 @@ class InsertDictateRule(CompoundRule):
             + [Key('escape')]
 
         for action in sequence:
+            action.execute()
+
+class QuickCommand(CompoundRule):
+    """execute a single command-mode rule"""
+
+    spec = "command <x>"
+    extras = [
+        Alternative(
+            children=[
+                RuleRef(rule=CommandModeFileOperations()),
+                RuleRef(rule=CommandModeMisc()),
+                RuleRef(rule=CommandModeSearchAndReplace()),
+            ],
+            name="x"
+        )
+    ]
+
+    def _process_recognition(self, node, extras):
+        seq = [Key("colon")] + [extras["x"]]
+            
+        for action in seq:
             action.execute()
 

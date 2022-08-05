@@ -34,3 +34,10 @@ class VimTerminalMode(AppContext):
         logger.debug(f'VimTerminalMode: {match}')
 
         return match
+
+class VimCommandMode(AppContext):
+    def matches(self, executable, title, handle):
+        match = "mode:c" in title
+        logger.debug(f'VimCommandMode: {match}')
+
+        return match
