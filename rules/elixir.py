@@ -13,6 +13,7 @@ class CodeShortcutRule(MappingRule):
         "[do a | make a] [rocket | fat arrow]": Text("=> "),
         "[do an | make an] arrow": Text("-> "),
         "[do a | make a] comment": Text("# "),
+        "[do an | make an] embedded elixir variable": Text("<%%=  %%>") + Key('left:3'),
     }
 
 class KeywordsRule(MappingRule):
@@ -31,6 +32,7 @@ class KeywordsRule(MappingRule):
         "not": Text("not "),
 
         "(def | death)": Text("def "),
+        "(def | death) (pea | pit)": Text("defp "),
         "(def | death) module": Text("defmodule "),
     }
 

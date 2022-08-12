@@ -17,6 +17,8 @@ class FzfFinderWindowRule(MappingRule):
             format_dictation),
 
         "<letter>": Text("%(letter)s"),
+
+        "escape": Key('escape')
     }
 
     extras = [

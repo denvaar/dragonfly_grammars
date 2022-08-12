@@ -58,7 +58,7 @@ def singleLetter(name="letter"):
         'space': ' ',
         'comma': ',',
         '(bar | vertical bar)': '|',
-
+        'bang': '!',
         '[forward] slash': '/',
     }
 

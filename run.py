@@ -27,7 +27,7 @@ else:
     setup_log()
 
 def pick_language_model_engine():
-    name = os.environ.get('LANGUAGE_MODEL_NAME')
+    name = 'kaldi'
     lang_model_path = {
         'kaldi': 'language_models/kaldi_model'
     }
